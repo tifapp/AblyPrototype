@@ -1,5 +1,6 @@
 import { StyleProp, View, ViewStyle, Text } from "react-native";
 import { channelColor, useLatestChannelMessage } from "./ably";
+import { ContentText } from "./ContentText";
 
 export type ChannelPreviewProps = {
   name: string;
@@ -27,7 +28,11 @@ export const ChannelPreviewView = ({ name, style }: ChannelPreviewProps) => {
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{name}</Text>
         {latestMessage && (
-          <Text style={{ opacity: 0.5, marginTop: 4 }}>{latestMessage}</Text>
+          <ContentText
+            text={latestMessage.data[latestMessage.data.length - 1]}
+            numberOfLines={2}
+            style={{ opacity: 0.5, marginTop: 4 }}
+          />
         )}
       </View>
     </View>

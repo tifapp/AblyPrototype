@@ -24,15 +24,13 @@ export const useChannel = (name: string) => {
 };
 
 export const useLatestChannelMessage = (name: string) => {
-  const [message, setMessage] = useState<string | undefined>();
+  const [message, setMessage] = useState<Ably.Types.Message | undefined>();
 
   useEffect(() => {
     const listen = async () => {
       await ably.channels
         .get(name)
-        .subscribe(CHAT_MESSAGE_EVENT_NAME, (message) => {
-          setMessage(message.data);
-        });
+        .subscribe(CHAT_MESSAGE_EVENT_NAME, setMessage);
     };
     listen();
   });
