@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Ably from "ably";
 import { ABLY_API_KEY } from "./secrets";
 
@@ -15,6 +15,10 @@ export const useIsConnectedToAbly = () => {
     return ably.close;
   }, []);
   return isConnected;
+};
+
+export const useChannel = (name: string) => {
+  return useMemo(() => ably.channels.get(name), [name]);
 };
 
 export const CHANNEL_NAMES = [
