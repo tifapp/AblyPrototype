@@ -1,4 +1,5 @@
 import { StyleProp, ViewStyle, Text } from "react-native";
+import { ChannelInputView } from "./ChannelInput";
 
 export type ChatChannelProps = {
   name: string;
@@ -6,5 +7,5 @@ export type ChatChannelProps = {
 };
 
 export const ChatChannelView = ({ name, style }: ChatChannelProps) => {
-  return <Text style={style}>{name} chat</Text>;
+  return <ChannelInputView name={name} style={style} />;
 };

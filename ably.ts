@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import Ably from "ably";
 import { ABLY_API_KEY } from "./secrets";
 
+const CHAT_MESSAGE_EVENT_NAME = "chat-message";
+
 const ably = new Ably.Realtime.Promise(ABLY_API_KEY);
 
 export const useIsConnectedToAbly = () => {
@@ -19,6 +21,49 @@ export const useIsConnectedToAbly = () => {
 
 export const useChannel = (name: string) => {
   return useMemo(() => ably.channels.get(name), [name]);
+};
+
+export const useLatestChannelMessage = (name: string) => {
+  const [message, setMessage] = useState<string | undefined>();
+
+  useEffect(() => {
+    const listen = async () => {
+      await ably.channels
+        .get(name)
+        .subscribe(CHAT_MESSAGE_EVENT_NAME, (message) => {
+          setMessage(message.data);
+        });
+    };
+    listen();
+  });
+
+  return message;
+};
+
+class ChunkedMessageSender {
+  private readonly channel: Ably.Types.RealtimeChannelPromise;
+  private queuedMessages = [] as string[];
+  private timeoutId?: NodeJS.Timeout;
+
+  constructor(channel: Ably.Types.RealtimeChannelPromise) {
+    this.channel = channel;
+  }
+
+  send(message: string) {
+    this.queuedMessages.push(message);
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(async () => {
+      await this.channel.publish(CHAT_MESSAGE_EVENT_NAME, this.queuedMessages);
+      this.queuedMessages = [];
+    }, 500);
+  }
+}
+
+export const useChannelMessageSender = (name: string) => {
+  return useMemo(
+    () => new ChunkedMessageSender(ably.channels.get(name)),
+    [name]
+  );
 };
 
 export const CHANNEL_NAMES = [

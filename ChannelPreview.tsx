@@ -1,5 +1,5 @@
 import { StyleProp, View, ViewStyle, Text } from "react-native";
-import { channelColor } from "./ably";
+import { channelColor, useLatestChannelMessage } from "./ably";
 
 export type ChannelPreviewProps = {
   name: string;
@@ -7,6 +7,7 @@ export type ChannelPreviewProps = {
 };
 
 export const ChannelPreviewView = ({ name, style }: ChannelPreviewProps) => {
+  const latestMessage = useLatestChannelMessage(name);
   return (
     <View
       style={[
@@ -25,9 +26,9 @@ export const ChannelPreviewView = ({ name, style }: ChannelPreviewProps) => {
       />
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{name}</Text>
-        <Text style={{ opacity: 0.5, marginTop: 4 }}>
-          Lorem Ipsum dolor sit amet, consectetur adipiscing elit.
-        </Text>
+        {latestMessage && (
+          <Text style={{ opacity: 0.5, marginTop: 4 }}>{latestMessage}</Text>
+        )}
       </View>
     </View>
   );
