@@ -71,6 +71,10 @@ class ChunkedMessageSender {
   }
 }
 
+export const useYouId = () => {
+  return ably.connection.id;
+};
+
 export const useChannelMessageSender = (name: string) => {
   return useMemo(
     () => new ChunkedMessageSender(ably.channels.get(name)),

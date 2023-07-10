@@ -5,9 +5,12 @@ import {
   FlatList,
   View,
   SafeAreaView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { ChannelInputView } from "./ChannelInput";
-import { useChannelMessages } from "./ably";
+import { useChannelMessages, useYouId } from "./ably";
+import { ChatMessage } from "./ChatMessage";
+import { ChannelChatMessageView } from "./ChannelChatMessage";
 
 export type ChannelChatProps = {
   name: string;
@@ -15,7 +18,7 @@ export type ChannelChatProps = {
 };
 
 export const ChannelChatView = ({ name, style }: ChannelChatProps) => {
-  const messages = useChannelMessages(name);
+  const messages = useChannelChatMessages(name);
   return (
     <View style={style}>
       <SafeAreaView
@@ -24,15 +27,16 @@ export const ChannelChatView = ({ name, style }: ChannelChatProps) => {
         <FlatList
           style={[style, { marginBottom: 130 }]}
           data={messages}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View>
-              {item.data.map((message: string, index: number) => (
-                <Text key={`${item.timestamp}-${index}`}>{message}</Text>
-              ))}
-            </View>
+            <ChannelChatMessageView
+              message={item}
+              style={{ paddingVertical: 2, marginHorizontal: 8 }}
+            />
           )}
         />
-        <View
+        <KeyboardAvoidingView
+          behavior="padding"
           style={{
             position: "absolute",
             bottom: 0,
@@ -44,8 +48,28 @@ export const ChannelChatView = ({ name, style }: ChannelChatProps) => {
             name={name}
             style={{ paddingHorizontal: 16, marginBottom: 70, marginTop: 16 }}
           />
-        </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );
+};
+
+const useChannelChatMessages = (name: string) => {
+  const youId = useYouId();
+  const messages = useChannelMessages(name);
+  return messages.reduce((acc, curr) => {
+    const isSameSender =
+      acc.length > 0 && acc[acc.length - 1].userId === curr.connectionId;
+    if (isSameSender) {
+      acc[acc.length - 1].isShowingProfile = false;
+    }
+    const messages = curr.data.map((message: string, index: number) => ({
+      id: `${curr.id}-${index}`,
+      userId: curr.connectionId,
+      text: message,
+      isYou: curr.connectionId === youId,
+      isShowingProfile: index === curr.data.length - 1,
+    })) as ChatMessage[];
+    return [...acc, ...messages];
+  }, [] as ChatMessage[]);
 };
