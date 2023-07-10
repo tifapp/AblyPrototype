@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useIsConnectedToAbly } from "./ably";
+import { ChannelListView } from "./ChannelList";
 
 const App = () => {
   const isConnected = useIsConnectedToAbly();
@@ -15,11 +15,10 @@ const App = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>Connected</Text>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <SafeAreaView>
+      <ChannelListView />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -28,7 +27,6 @@ export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },

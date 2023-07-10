@@ -16,3 +16,17 @@ export const useIsConnectedToAbly = () => {
   }, []);
   return isConnected;
 };
+
+export const CHANNEL_NAMES = [
+  "5K Setup",
+  "Wrestling Tournament",
+  "Group Hike",
+  "Secret Mystery Event",
+];
+
+export const channelColor = (name: string) => {
+  if (name === CHANNEL_NAMES[0]) return "green";
+  if (name === CHANNEL_NAMES[1]) return "red";
+  if (name === CHANNEL_NAMES[2]) return "blue";
+  return "orange";
+};
