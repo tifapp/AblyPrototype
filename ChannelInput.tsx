@@ -37,7 +37,7 @@ export const ChannelInputView = ({ name, style }: ChannelInputProps) => {
           />
         </Pressable>
         {isEventOver ? (
-          <Text>
+          <Text style={{ flex: 1, opacity: 0.5 }}>
             This event has ended. You can still read messages, but you cannot
             send messages.
           </Text>
@@ -70,7 +70,7 @@ export const ChannelInputView = ({ name, style }: ChannelInputProps) => {
                 name="send"
                 size={24}
                 color="black"
-                style={{ opacity: 0.5, marginLeft: 16, padding: 8 }}
+                style={{ opacity: 0.5, padding: 8 }}
               />
             </TouchableOpacity>
           </View>

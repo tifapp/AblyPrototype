@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Ably from "ably";
 import { ABLY_API_KEY } from "./secrets";
 
@@ -25,17 +25,31 @@ export const useChannel = (name: string) => {
 
 export const useLatestChannelMessage = (name: string) => {
   const [message, setMessage] = useState<Ably.Types.Message | undefined>();
+  useChannelSubscription(name, setMessage);
+  return message;
+};
 
+export const useChannelMessages = (name: string) => {
+  const [messages, setMessages] = useState<Ably.Types.Message[]>([]);
+  const onReceive = useCallback((message: Ably.Types.Message) => {
+    setMessages((messages) => messages.concat(message));
+  }, []);
+  useChannelSubscription(name, onReceive);
+  return messages;
+};
+
+export const useChannelSubscription = (
+  name: string,
+  onMessageReceived: (message: Ably.Types.Message) => void
+) => {
   useEffect(() => {
     const listen = async () => {
       await ably.channels
         .get(name)
-        .subscribe(CHAT_MESSAGE_EVENT_NAME, setMessage);
+        .subscribe(CHAT_MESSAGE_EVENT_NAME, onMessageReceived);
     };
     listen();
-  });
-
-  return message;
+  }, [name, onMessageReceived]);
 };
 
 class ChunkedMessageSender {

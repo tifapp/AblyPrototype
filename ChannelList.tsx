@@ -10,7 +10,7 @@ import {
 import { CHANNEL_NAMES } from "./ably";
 import { ChannelPreviewView } from "./ChannelPreview";
 import { useState } from "react";
-import { ChatChannelView } from "./ChatChannelView";
+import { ChannelChatView } from "./ChatChannelView";
 import { Divider } from "./Divider";
 import { ChannelHeaderView } from "./ChannelHeader";
 
@@ -55,9 +55,9 @@ export const ChannelListView = ({ style }: ChannelListProps) => {
                 onClosed={() => setPresentedChannel(undefined)}
                 style={{ paddingHorizontal: 16 }}
               />
-              <ChatChannelView
+              <ChannelChatView
                 name={presentedChannel}
-                style={{ marginTop: 24 }}
+                style={{ marginTop: 8 }}
               />
             </>
           )}
