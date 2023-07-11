@@ -40,7 +40,7 @@ const MessageTextView = ({ text, isYou }: MessageTextProps) => (
   <View
     style={{
       borderRadius: 12,
-      backgroundColor: isYou ? "gray" : "yellow",
+      backgroundColor: isYou ? "#f5f4f2" : "#fff170",
       marginHorizontal: 4,
       maxWidth: "75%",
     }}

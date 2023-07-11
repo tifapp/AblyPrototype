@@ -8,9 +8,10 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { ChannelInputView } from "./ChannelInput";
-import { useChannelMessages, useYouId } from "./ably";
+import { useChannelMessageHistory, useChannelMessages, useYouId } from "./ably";
 import { ChatMessage } from "./ChatMessage";
 import { ChannelChatMessageView } from "./ChannelChatMessage";
+import Ably from "ably";
 
 export type ChannelChatProps = {
   name: string;
@@ -56,8 +57,9 @@ export const ChannelChatView = ({ name, style }: ChannelChatProps) => {
 
 const useChannelChatMessages = (name: string) => {
   const youId = useYouId();
+  const history = useChannelMessageHistory(name, 100);
   const messages = useChannelMessages(name);
-  return messages.reduce((acc, curr) => {
+  return [...history, ...messages].reduce((acc, curr) => {
     const isSameSender =
       acc.length > 0 && acc[acc.length - 1].userId === curr.connectionId;
     if (isSameSender) {

@@ -38,18 +38,32 @@ export const useChannelMessages = (name: string) => {
   return messages;
 };
 
+export const useChannelMessageHistory = (name: string, limit: number) => {
+  const channel = useChannel(name);
+  const [messages, setMessages] = useState<Ably.Types.Message[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const results = await channel.history({ limit });
+      setMessages(results.items.reverse());
+    };
+    load();
+  }, [channel, limit]);
+
+  return messages;
+};
+
 export const useChannelSubscription = (
   name: string,
   onMessageReceived: (message: Ably.Types.Message) => void
 ) => {
+  const channel = useChannel(name);
   useEffect(() => {
     const listen = async () => {
-      await ably.channels
-        .get(name)
-        .subscribe(CHAT_MESSAGE_EVENT_NAME, onMessageReceived);
+      await channel.subscribe(CHAT_MESSAGE_EVENT_NAME, onMessageReceived);
     };
     listen();
-  }, [name, onMessageReceived]);
+  }, [channel, onMessageReceived]);
 };
 
 class ChunkedMessageSender {

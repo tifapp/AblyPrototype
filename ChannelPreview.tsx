@@ -1,5 +1,10 @@
 import { StyleProp, View, ViewStyle, Text } from "react-native";
-import { channelColor, useLatestChannelMessage } from "./ably";
+import {
+  channelColor,
+  useChannelMessageHistory,
+  useLatestChannelMessage,
+} from "./ably";
+import Ably from "ably";
 import { ContentText } from "./ContentText";
 
 export type ChannelPreviewProps = {
@@ -8,7 +13,9 @@ export type ChannelPreviewProps = {
 };
 
 export const ChannelPreviewView = ({ name, style }: ChannelPreviewProps) => {
-  const latestMessage = useLatestChannelMessage(name);
+  const history = useChannelMessageHistory(name, 25);
+  const latestMessage =
+    useLatestChannelMessage(name) ?? history[history.length - 1];
   return (
     <View
       style={[
