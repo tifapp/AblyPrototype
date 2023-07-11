@@ -1,7 +1,6 @@
 import {
   StyleProp,
   ViewStyle,
-  Text,
   FlatList,
   View,
   SafeAreaView,
@@ -11,7 +10,6 @@ import { ChannelInputView } from "./ChannelInput";
 import { useChannelMessageHistory, useChannelMessages, useYouId } from "./ably";
 import { ChatMessage } from "./ChatMessage";
 import { ChannelChatMessageView } from "./ChannelChatMessage";
-import Ably from "ably";
 
 export type ChannelChatProps = {
   name: string;

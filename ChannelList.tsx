@@ -7,8 +7,7 @@ import {
   Modal,
   SafeAreaView,
 } from "react-native";
-import Ably from "ably";
-import { CHANNEL_NAMES, useChannelMessageHistory } from "./ably";
+import { CHANNEL_NAMES } from "./ably";
 import { ChannelPreviewView } from "./ChannelPreview";
 import { useState } from "react";
 import { ChannelChatView } from "./ChatChannelView";
